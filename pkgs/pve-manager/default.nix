@@ -31,6 +31,7 @@
   corosync,
   openssl,
   systemd,
+  swtpm,
 }:
 
 let
@@ -150,6 +151,7 @@ perl538.pkgs.toPerlModule (
               termproxy
               util-linux
               wget
+              swtpm
             ]
           } \
           --prefix PERL5LIB : $out/${perl538.libPrefix}/${perl538.version}
