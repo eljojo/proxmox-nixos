@@ -93,6 +93,11 @@ in
       environment.systemPackages = [ cfg.package ];
       environment.etc.issue.enable = false;
 
+      environment.etc."swtpm_setup.conf" = {
+        text = ''
+        '';
+      };
+
       networking.firewall = mkIf cfg.openFirewall {
         allowedTCPPorts = [
           80
