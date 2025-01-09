@@ -17,6 +17,7 @@
   mimebase32,
   mimebase64,
   substituteAll,
+  swtpm,
 }:
 
 let
@@ -104,6 +105,7 @@ perl538.pkgs.toPerlModule (
       proxmox-backup-client
       systemd
       usbutils
+      swtpm
     ] ++ perlDeps;
 
     makeFlags = [
