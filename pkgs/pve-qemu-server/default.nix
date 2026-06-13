@@ -18,6 +18,7 @@
   termreadline,
   socat,
   vncterm,
+  virtiofsd,
   swtpm,
   libglvnd,
   pve-update-script,
@@ -146,6 +147,7 @@ perl5.pkgs.toPerlModule (
         -e "s|vncterm|${vncterm}/bin/vncterm|" \
         -e "s|qemu-kvm|${pve-qemu}/bin/qemu-kvm|" \
         -e "s|qemu-system|${pve-qemu}/bin/qemu-system|" \
+        -e "s|/usr/libexec/virtiofsd|${lib.getExe virtiofsd}|" \
         -e "s|/var/lib/qemu-server|$out/lib/qemu-server|" \
         -e "s|/usr/share/pve-edk2-firmware|${pve-edk2-firmware}/usr/share/pve-edk2-firmware|" \
         -e 's|/etc/swtpm_setup.conf|${swtpm}/etc/swtpm_setup.conf|' \
