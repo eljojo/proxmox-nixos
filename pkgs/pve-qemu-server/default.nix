@@ -21,6 +21,7 @@
   virtiofsd,
   swtpm,
   libglvnd,
+  virtiofsd,
   pve-update-script,
   python3Packages,
 }:
@@ -60,12 +61,12 @@ in
 perl5.pkgs.toPerlModule (
   stdenv.mkDerivation rec {
     pname = "pve-qemu-server";
-    version = "9.1.16";
+    version = "9.2.5";
 
     src = fetchgit {
       url = "git://git.proxmox.com/git/qemu-server.git";
-      rev = "02ba5c110a0c82acbfbf58c91350a0eb24ded686";
-      hash = "sha256-yfNb5p2zIbnFbfngHccuayy9TZLHwx/uHii/5LX40jw=";
+      rev = "0f5055d88e1458117d7f716265285d28978a9d1d";
+      hash = "sha256-AyTLGJQvyxHN7oAcUO3dr8FNtM2aenZEQXtWXeZ2C8E=";
     };
 
     sourceRoot = "${src.name}/src";
@@ -86,7 +87,9 @@ perl5.pkgs.toPerlModule (
       sed -i PVE/QemuServer/Helpers.pm -e "s/\[,\\\s\]//"
 
       # Fix libGL and libEGL detection
-      sed -i PVE/QemuServer.pm -e "s|/usr/lib/x86_64-linux-gnu/lib|${libglvnd}/lib/lib|"
+      substituteInPlace PVE/QemuServer.pm \
+        --replace-fail 'my $base = "/usr/lib/''${host_arch}-linux-gnu/lib";' \
+        'my $base = "${libglvnd}/lib/lib";'
 
       # Fix Microsoft 2023 KEK cert path for `qm enroll-efi-keys`. Proxmox
       # hardcodes the pre-2025 virt-firmware layout (matching Debian Trixie's
@@ -152,6 +155,7 @@ perl5.pkgs.toPerlModule (
         -e "s|/usr/share/pve-edk2-firmware|${pve-edk2-firmware}/usr/share/pve-edk2-firmware|" \
         -e 's|/etc/swtpm_setup.conf|${swtpm}/etc/swtpm_setup.conf|' \
         -e "s|virt-fw-vars|${python3Packages.virt-firmware}/bin/virt-fw-vars|g" \
+        -e "s|/usr/libexec/virtiofsd|${virtiofsd}/bin/virtiofsd|" \
         #-e "s|/usr/bin/proxmox-backup-client|${proxmox-backup-client}/bin/proxmox-backup-client|" \
         #-e "s|/usr/sbin/qm|$out/bin/qm|" \
         #-e "s|/usr/bin/qemu|${pve-qemu}/bin/qemu|" \

@@ -5,6 +5,7 @@
   bash,
   coreutils,
   diffutils,
+  dpkg,
   iproute2,
   perl5,
   glibc,
@@ -72,12 +73,12 @@ in
 perl5.pkgs.toPerlModule (
   stdenv.mkDerivation rec {
     pname = "pve-common";
-    version = "9.1.12";
+    version = "9.2.1";
 
     src = fetchgit {
       url = "git://git.proxmox.com/git/${pname}.git";
-      rev = "24efad6f8bc20dd5bd0fd06cfd9dfadb42248b8a";
-      hash = "sha256-ogjBZFhFdxiKAihkX+lGabLGpt6ZiDPCBOSSKxCujFg=";
+      rev = "f665029eac78022e81810ab2e44eace57ade13fb";
+      hash = "sha256-dbx62D2ePcmSp1TiGVqQ0cdhOdJ7LwP4ZM/vAaXUAfA=";
     };
 
     sourceRoot = "${src.name}/src";
@@ -96,6 +97,7 @@ perl5.pkgs.toPerlModule (
       bash
       coreutils
       diffutils
+      dpkg
       iproute2
       proxmox-backup-client
       systemd
@@ -136,6 +138,10 @@ perl5.pkgs.toPerlModule (
         -e "s|ovs-vsctl|${openvswitch}/bin/ovs-vsctl|" \
         -e "s|/usr/share/zoneinfo|${tzdata}/share/zoneinfo|" \
         -Ee "s|(/usr)?/s?bin/||"
+
+      substituteInPlace $out/${perl5.libPrefix}/${perl5.version}/PVE/Tools.pm \
+        --replace-fail "['dpkg', '--print-architecture']" \
+        "['${dpkg}/bin/dpkg', '--print-architecture']"
     '';
 
     passthru.updateScript = pve-update-script {
